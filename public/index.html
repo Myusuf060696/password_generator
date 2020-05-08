@@ -1,0 +1,121 @@
+<!--
+
+thanks to florincornea
+this code inspired by florincornea
+https://dev.to/florincornea/vue-js-2-password-generator-vue04-11h8
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <style>
+      body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background-color: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .g-options-wrapper{
+      padding-top: 60px;
+    }
+    </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Pssword Generator</h1>
+    <div class="second-card">
+      <div class="g-password-wrapper">
+        <input type="text" class="g-password-input" id="g-password" type="text" v-bind:value="password" size="45" disabled><br>
+        <input type="submit" class="g-btn" v-on:click="onGenerate">
+        <button class="g-copy-password" v-on:click="onCopyPass">
+          {{copyText}}
+        </button>
+      </div>
+      <div class="g-options-wrapper">
+        <label for="">Choose Password Length</label>
+        <div class="g-length-wrapper">
+          <br />
+          <input class="g-range" type="range" min="3" max="30" v-bind:value="gLength" v-model="gLength">
+          <input class="g-number" type="number" min="3" max="30" v-bind:value="gLength" v-model="gLength">
+        </div>
+        <div class="g-row g-m-15" v-for="type in characters">
+          <input type="checkbox" v-bind:checked="type.checked" v-on:click="type.checked = !type.checked">
+          <label for="">{{type.name}}</label>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script>
+  new Vue({
+      el: '#app',
+      data: function () {
+        return {
+          generateText: "Generate",
+          copyText: "Copy",
+          characters: [
+            {
+              name: "Lowercase",
+              value: "abcdefghijklmnopqrstuvwxyz",
+              checked: true,
+            },
+            {
+              name: "Uppercase",
+              value: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+              checked: true,
+            },
+            {
+              name: "Numbers",
+              value: "0123456789",
+              checked: true,
+            },
+            {
+              name: "Special Characters",
+              value: "_-+=)(*&^%$#@!`~",
+              checked: false,
+            },
+          ],
+          password: "",
+          gLength: 20,
+        }
+      },
+      methods: {
+        onGenerate: function () {
+          let result = "";
+          let charactersVal = "";
+          for (var j = 0; j < this.characters.length; j++) {
+            if (this.characters[j].checked) {
+              charactersVal += this.characters[j].value;
+            }
+          }
+          for (var i = 0; i < this.gLength; i++) {
+            result += charactersVal.charAt(Math.floor(Math.random() * charactersVal.length));
+          }
+          this.password = result;
+        },
+        onCopyPass: function () {
+          let textToCopy = this.password;
+          try {
+            // 1) Copy text
+            navigator.clipboard.writeText(textToCopy);
+
+            // 2) Catch errors
+          } catch (err) {
+            console.error('Failed to copy: ', err);
+          }
+        }
+      },
+    });
+</script>
+</html>
